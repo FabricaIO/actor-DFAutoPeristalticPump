@@ -13,16 +13,19 @@
 #include <GenericParameterTrigger.h>
 
 /// @brief Adds auto triggering to DFPeristalticPump
-class DFAutoPeristalticPump : public DFPeristalticPump, public PeriodicTask, public GenericParameterTrigger {
-	protected:
+class DFAutoPeristalticPump : public DFPeristalticPump, public PeriodicTask {
+	private:
 		/// @brief Additional settings required
 		struct {
 			/// @brief Threshold below which to deliver a dose
 			int threshold;
 
-			/// @brief If the pump should acitvate on a low reading
+			/// @brief If the pump should activate on a low reading
 			bool activeLow;
 		} add_config;
+		
+		/// @brief Used to track desired parameters 
+		GenericParameterTrigger trigger;
 
 		bool enableAuto(bool enable);
 		JsonDocument addAdditionalConfig();
