@@ -16,7 +16,6 @@ bool DFAutoPeristalticPump::begin() {
 		// Set description
 		Description.type = "pump";
 		Description.name = "Auto Peristaltic Pump";
-		Description.id = 3;
 		if (!configExists) {
 			// Set defaults
 			add_config.activeLow = false;
