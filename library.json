@@ -32,18 +32,20 @@
 		"description": "A peristaltic pump that maintains a particular sensor value",
 		"constructor":
 		[
-			{
-				"name": "Pin",
-				"type": "int",
-				"description": "The pin to use",
-				"default": ""
-			},
-			{
-				"name": "Configfile",
-				"type": "String",
-				"description": "The file name to store settings in",
-				"default": "DFAutoPump.json"
-			}
+			[
+				{
+					"name": "Pin",
+					"type": "int",
+					"description": "The pin to use",
+					"default": ""
+				},
+				{
+					"name": "Configfile",
+					"type": "String",
+					"description": "The file name to store settings in",
+					"default": "DFAutoPump.json"
+				}
+			]
 		]
 	}
   }
