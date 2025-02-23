@@ -14,7 +14,7 @@
 
 /// @brief Adds auto triggering to DFPeristalticPump
 class DFAutoPeristalticPump : public DFPeristalticPump, public PeriodicTask {
-	private:
+	protected:
 		/// @brief Additional settings required
 		struct {
 			/// @brief Threshold below which to deliver a dose
