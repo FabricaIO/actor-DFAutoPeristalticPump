@@ -27,7 +27,6 @@ class DFAutoPeristalticPump : public DFPeristalticPump, public PeriodicTask {
 		/// @brief Used to track desired parameters 
 		ParameterTrigger trigger;
 
-		bool enableAuto(bool enable);
 		JsonDocument addAdditionalConfig();
 	public:
 		DFAutoPeristalticPump(int Pin, String ConfigFile = "DFAutoPump.json");

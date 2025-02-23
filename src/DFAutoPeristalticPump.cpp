@@ -35,13 +35,6 @@ bool DFAutoPeristalticPump::begin() {
 	return result;
 }
 
-/// @brief Enables the auto pump
-/// @param enable True to enable, false to disable 
-/// @return True on success
-bool DFAutoPeristalticPump::enableAuto(bool enable) {
-	return enableTask(enable);
-}
-
 /// @brief Runs the auto pump task
 /// @param elapsed The amount of time, in ms, since this was last called
 void DFAutoPeristalticPump::runTask(long elapsed) {
@@ -104,7 +97,7 @@ bool DFAutoPeristalticPump::setConfig(String config, bool save) {
 				return false;
 			}
 		}
-		return enableAuto(trigger.parameter_config.Enabled);
+		return enableTask(trigger.parameter_config.Enabled);
 	}
 	return false;
 }
