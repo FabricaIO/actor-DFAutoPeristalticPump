@@ -24,9 +24,7 @@ bool DFAutoPeristalticPump::begin() {
 			trigger.parameter_config.Parameters[0] = "";
 			task_config.taskName = "Auto Pump";
 			task_config.taskPeriod = 1000;
-			String settings;
-			serializeJson(addAdditionalConfig(), settings);
-			result = setConfig(settings, true);
+			result = setConfig(getConfig(), true);
 		} else {
 			// Load settings
 			result = setConfig(Storage::readFile(config_path), false);
