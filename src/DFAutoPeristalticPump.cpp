@@ -35,7 +35,7 @@ bool DFAutoPeristalticPump::begin() {
 
 /// @brief Runs the auto pump task
 /// @param elapsed The amount of time, in ms, since this was last called
-void DFAutoPeristalticPump::runTask(long elapsed) {
+void DFAutoPeristalticPump::runTask(ulong elapsed) {
 	if (taskPeriodTriggered(elapsed)) {
 		std::map<String, double> params = trigger.getParameterValues();
 		// Ensure the desired parameter exists
