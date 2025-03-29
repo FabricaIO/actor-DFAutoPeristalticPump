@@ -29,7 +29,7 @@ class DFAutoPeristalticPump : public DFPeristalticPump, public PeriodicTask {
 
 		JsonDocument addAdditionalConfig();
 	public:
-		DFAutoPeristalticPump(int Pin, String ConfigFile = "DFAutoPump.json");
+		DFAutoPeristalticPump(String Name, int Pin, String ConfigFile = "DFAutoPump.json");
 		bool begin();
 		void runTask(ulong elapsed);
 		String getConfig();

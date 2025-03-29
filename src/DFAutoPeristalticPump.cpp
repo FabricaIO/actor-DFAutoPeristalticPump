@@ -1,9 +1,10 @@
 #include "DFAutoPeristalticPump.h"
 
 /// @brief Creates a peristaltic pump object
+/// @param Name The device name
 /// @param Pin The pin to use
 /// @param ConfigFile The file name to store settings in
-DFAutoPeristalticPump::DFAutoPeristalticPump(int Pin, String ConfigFile) : DFPeristalticPump (Pin, ConfigFile) {}
+DFAutoPeristalticPump::DFAutoPeristalticPump(String Name, int Pin, String ConfigFile) : DFPeristalticPump (Name, Pin, ConfigFile) {}
 
 /// @brief Starts a automatic pump
 /// @return True on success
@@ -15,7 +16,6 @@ bool DFAutoPeristalticPump::begin() {
 	if (DFPeristalticPump::begin()) {
 		// Set description
 		Description.type = "pump";
-		Description.name = "Auto Peristaltic Pump";
 		if (!configExists) {
 			// Set defaults
 			add_config.activeLow = false;
