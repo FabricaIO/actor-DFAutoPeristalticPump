@@ -37,7 +37,7 @@ bool DFAutoPeristalticPump::begin() {
 void DFAutoPeristalticPump::runTask(ulong elapsed) {
 	if (taskPeriodTriggered(elapsed)) {
 		std::map<String, std::map<String, double>> params = trigger.getParameterValues();
-		// Ensure the desired parameter exists std::vector<std::pair<String, String>> std::map<String, std::pair<String, double>> 
+		// Ensure the desired parameter exists
 		if (params.size() > 0) {
 			double value = params[trigger.parameter_config.Parameters[0].first][trigger.parameter_config.Parameters[0].second];
 			if (add_config.activeLow) {
