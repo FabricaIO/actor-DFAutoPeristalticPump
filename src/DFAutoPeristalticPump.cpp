@@ -21,7 +21,6 @@ bool DFAutoPeristalticPump::begin() {
 			add_config.activeLow = false;
 			add_config.threshold = 50;
 			trigger.parameter_config.Enabled = false;
-			trigger.parameter_config.Parameters[0] = "";
 			task_config.taskName = "Auto Pump";
 			task_config.taskPeriod = 1000;
 			result = setConfig(getConfig(), true);
@@ -37,10 +36,10 @@ bool DFAutoPeristalticPump::begin() {
 /// @param elapsed The amount of time, in ms, since this was last called
 void DFAutoPeristalticPump::runTask(ulong elapsed) {
 	if (taskPeriodTriggered(elapsed)) {
-		std::map<String, double> params = trigger.getParameterValues();
-		// Ensure the desired parameter exists
-		if (params.find(trigger.parameter_config.Parameters[0]) != params.end()) {
-			double value = params[trigger.parameter_config.Parameters[0]];
+		std::map<String, std::map<String, double>> params = trigger.getParameterValues();
+		// Ensure the desired parameter exists std::vector<std::pair<String, String>> std::map<String, std::pair<String, double>> 
+		if (params.size() > 0) {
+			double value = params[trigger.parameter_config.Parameters[0].first][trigger.parameter_config.Parameters[0].second];
 			if (add_config.activeLow) {
 				if (value < add_config.threshold) {
 					dose();
@@ -84,7 +83,11 @@ bool DFAutoPeristalticPump::setConfig(String config, bool save) {
 			return false;
 		}
 		// Assign loaded values
-		trigger.parameter_config.Parameters[0] = doc["autoParameter"].as<String>();
+		String trigger_combined = doc["autoParameter"]["current"].as<String>();
+		if (trigger_combined.indexOf(':') != -1) {
+			std::pair<String, String> chosen {trigger_combined.substring(0, trigger_combined.indexOf(':')), trigger_combined.substring(trigger_combined.indexOf(':') + 1)};
+			trigger.parameter_config.Parameters[0] = chosen;
+		}
 		add_config.threshold = doc["threshold"].as<int>();
 		trigger.parameter_config.Enabled = doc["autoEnabled"].as<bool>();
 		add_config.activeLow = doc["activeLow"].as<bool>();
@@ -113,7 +116,19 @@ JsonDocument DFAutoPeristalticPump::addAdditionalConfig() {
 		Logger.println(error.f_str());
 		return doc;
 	}
-	doc["autoParameter"] = trigger.parameter_config.Parameters[0];
+	doc["autoParameter"]["current"] = trigger.parameter_config.Parameters.size() > 0 ? trigger.parameter_config.Parameters[0].first + ":" + trigger.parameter_config.Parameters[0].second : "";
+	std::map<String, std::vector<String>> sensors = trigger.listAllParameters();
+	if (sensors.size() > 0) {
+		int i = 0;
+		for (std::map<String, std::vector<String>>::iterator sensor = sensors.begin(); sensor != sensors.end(); sensor++) {
+			for (const auto& p : sensor->second) {
+				doc["autoParameter"]["options"][i] = sensor->first + ":" + p;
+				i++;
+			}
+		}
+	} else {
+		doc["autoParameter"]["options"][0] = "";
+	}
 	doc["threshold"] = add_config.threshold;
 	doc["autoEnabled"] = trigger.parameter_config.Enabled;
 	doc["activeLow"] = add_config.activeLow;
