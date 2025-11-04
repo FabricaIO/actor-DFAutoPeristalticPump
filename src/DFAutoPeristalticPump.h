@@ -10,7 +10,7 @@
 #include <Arduino.h>
 #include <DFPeristalticPump.h>
 #include <PeriodicTask.h>
-#include <ParameterTrigger.h>
+#include <ParameterGetter.h>
 
 /// @brief Adds auto triggering to DFPeristalticPump
 class DFAutoPeristalticPump : public DFPeristalticPump, public PeriodicTask {
@@ -22,10 +22,13 @@ class DFAutoPeristalticPump : public DFPeristalticPump, public PeriodicTask {
 
 			/// @brief If the pump should activate on a low reading
 			bool activeLow;
+
+			/// @brief Enable the automatic triggering of the pump
+			bool autoEnabled;
 		} add_config;
 		
 		/// @brief Used to track desired parameters 
-		ParameterTrigger trigger;
+		ParameterGetter trigger;
 
 		JsonDocument addAdditionalConfig();
 	public:

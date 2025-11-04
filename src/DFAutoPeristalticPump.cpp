@@ -9,7 +9,7 @@ DFAutoPeristalticPump::DFAutoPeristalticPump(String Name, int Pin, String Config
 /// @brief Starts a automatic pump
 /// @return True on success
 bool DFAutoPeristalticPump::begin() {
-	trigger.parameter_config.Parameters.resize(1);
+	trigger.Parameters.resize(1);
 	bool result = false;
 	bool configExists = checkConfig(config_path);
 	// Create settings directory if necessary
@@ -20,7 +20,7 @@ bool DFAutoPeristalticPump::begin() {
 			// Set defaults
 			add_config.activeLow = false;
 			add_config.threshold = 50;
-			trigger.parameter_config.Enabled = false;
+			add_config.autoEnabled = false;
 			task_config.set_taskName(Description.name.c_str());
 			task_config.taskPeriod = 1000;
 			result = setConfig(getConfig(), true);
@@ -39,7 +39,7 @@ void DFAutoPeristalticPump::runTask(ulong elapsed) {
 		std::map<String, std::map<String, double>> params = trigger.getParameterValues();
 		// Ensure the desired parameter exists
 		if (params.size() > 0) {
-			double value = params[trigger.parameter_config.Parameters[0].first][trigger.parameter_config.Parameters[0].second];
+			double value = params[trigger.Parameters[0].first][trigger.Parameters[0].second];
 			if (add_config.activeLow) {
 				if (value < add_config.threshold) {
 					dose();
@@ -86,10 +86,10 @@ bool DFAutoPeristalticPump::setConfig(String config, bool save) {
 		String trigger_combined = doc["autoParameter"]["current"].as<String>();
 		if (trigger_combined.indexOf(':') != -1) {
 			std::pair<String, String> chosen {trigger_combined.substring(0, trigger_combined.indexOf(':')), trigger_combined.substring(trigger_combined.indexOf(':') + 1)};
-			trigger.parameter_config.Parameters[0] = chosen;
+			trigger.Parameters[0] = chosen;
 		}
 		add_config.threshold = doc["threshold"].as<int>();
-		trigger.parameter_config.Enabled = doc["autoEnabled"].as<bool>();
+		add_config.autoEnabled = doc["autoEnabled"].as<bool>();
 		add_config.activeLow = doc["activeLow"].as<bool>();
 		task_config.set_taskName(Description.name.c_str());
 		task_config.taskPeriod = doc["taskPeriod"].as<long>();
@@ -98,7 +98,7 @@ bool DFAutoPeristalticPump::setConfig(String config, bool save) {
 				return false;
 			}
 		}
-		return enableTask(trigger.parameter_config.Enabled);
+		return enableTask(add_config.autoEnabled);
 	}
 	return false;
 }
@@ -116,7 +116,7 @@ JsonDocument DFAutoPeristalticPump::addAdditionalConfig() {
 		Logger.println(error.f_str());
 		return doc;
 	}
-	doc["autoParameter"]["current"] = trigger.parameter_config.Parameters.size() > 0 ? trigger.parameter_config.Parameters[0].first + ":" + trigger.parameter_config.Parameters[0].second : "";
+	doc["autoParameter"]["current"] = trigger.Parameters.size() > 0 ? trigger.Parameters[0].first + ":" + trigger.Parameters[0].second : "";
 	std::map<String, std::vector<String>> sensors = trigger.listAllParameters();
 	if (sensors.size() > 0) {
 		int i = 0;
@@ -130,7 +130,7 @@ JsonDocument DFAutoPeristalticPump::addAdditionalConfig() {
 		doc["autoParameter"]["options"][0] = "";
 	}
 	doc["threshold"] = add_config.threshold;
-	doc["autoEnabled"] = trigger.parameter_config.Enabled;
+	doc["autoEnabled"] = add_config.autoEnabled;
 	doc["activeLow"] = add_config.activeLow;
 	doc["taskPeriod"] = task_config.taskPeriod;
 	return doc;
